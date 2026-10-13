@@ -2,7 +2,7 @@ import Foundation
 
 /// A group of styles sold together. `.free` is always unlocked.
 enum Pack: String, CaseIterable, Codable, Identifiable {
-    case free, retro, space, pro
+    case free, retro, space, pro, live
 
     var id: String { rawValue }
 
@@ -12,15 +12,17 @@ enum Pack: String, CaseIterable, Codable, Identifiable {
         case .retro: "Retro Pack"
         case .space: "Space Pack"
         case .pro: "Pro Pack"
+        case .live: "Live Pack"
         }
     }
 
     var tagline: String {
         switch self {
-        case .free: "Flip, Minimal, Analog, Bold, Name Tag, Calendar and Battery."
+        case .free: "Flip, Minimal, Analog, Bold, Name Tag, Calendar, Battery, LED Scroller, Talk Timer and Now Serving."
         case .retro: "Neon, LCD, Terminal and Synthwave clocks."
         case .space: "Galaxy, Aurora, Nebula, Orbit and the Moon widget."
         case .pro: "Word Clock, Binary, Studio plus Countdown, Quote and Photo widgets."
+        case .live: "DVD Bounce, Matrix, Starfield, Mystify, Fireplace, Candle and Lava Lamp."
         }
     }
 
@@ -30,6 +32,7 @@ enum Pack: String, CaseIterable, Codable, Identifiable {
         case .retro: "gamecontroller"
         case .space: "sparkles"
         case .pro: "crown"
+        case .live: "play.tv"
         }
     }
 
@@ -46,7 +49,7 @@ enum StoreProducts {
     }
 
     static func packs(for productID: String) -> Set<Pack> {
-        if productID == allAccess { return [.retro, .space, .pro] }
+        if productID == allAccess { return Set(Pack.allCases.filter { $0 != .free }) }
         return Set(Pack.allCases.filter { $0.productID == productID })
     }
 }

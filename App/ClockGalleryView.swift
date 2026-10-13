@@ -36,6 +36,7 @@ struct ClockGalleryView: View {
             .padding()
         }
         .navigationTitle("StandBy Studio")
+        .toolbar { CustomizeButton() }
         .navigationDestination(for: ClockStyle.self) { style in
             StyleDetailView(style: style)
         }

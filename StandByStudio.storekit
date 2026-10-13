@@ -30,7 +30,16 @@
       "type" : "NonConsumable"
     },
     {
-      "displayPrice" : "4.99",
+      "displayPrice" : "2.99",
+      "familyShareable" : true,
+      "internalID" : "6740000005",
+      "localizations" : [ { "description" : "DVD Bounce, Matrix, Starfield, Mystify, Fireplace, Candle and Lava Lamp.", "displayName" : "Live Pack", "locale" : "en_US" } ],
+      "productID" : "com.ariberko.standbystudio.live",
+      "referenceName" : "Live Pack",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "5.99",
       "familyShareable" : true,
       "internalID" : "6740000004",
       "localizations" : [ { "description" : "Every pack, now and in the future.", "displayName" : "All Access", "locale" : "en_US" } ],

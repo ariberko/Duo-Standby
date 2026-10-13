@@ -11,9 +11,12 @@ Built for iPhone and the new iPhone Duo. The app UI uses system containers so it
 | Retro | $1.99 | Neon, LCD, Terminal, Synthwave | |
 | Space | $1.99 | Galaxy, Aurora, Nebula, Orbit | Moon Phase |
 | Pro | $2.99 | Word Clock, Binary, Studio | Countdown, Quote (tap to shuffle), Photo Clock |
-| All Access | $4.99 | everything | everything |
+| Live | $2.99 | | DVD Bounce, Matrix Rain, Starfield, Mystify, Fireplace, Candle, Lava Lamp |
+| All Access | $5.99 | everything | everything |
 
 **Name Tag** (free): type a name and title, or pick one of 16 signs like Do Not Disturb, Busy or Lunch Break. Pick your own background, text and accent colors (or a quick theme). Save your own tags as presets. Show it full screen for tent mode (the screen stays awake, and Flip turns it upside down), or add it as a StandBy widget. 5 styles: Classic, Hello, Alert, Neon, Minimal.
+
+**Live scenes** (Live tab): full screen animations made natively with SwiftUI `TimelineView` and `Canvas`. Free: LED Scroller, Talk Timer, Now Serving. Live Pack: DVD Bounce (with corner hits!), Matrix Rain, Starfield, Mystify, Fireplace, Candle, Lava Lamp. They run in the app, not as widgets, because widgets can't animate.
 
 Every user can pick an accent color, font and 12/24-hour time. Locked styles still show in the widget picker, blurred, and tapping them opens the store.
 
@@ -26,7 +29,7 @@ App/                     The iOS app (gallery, StandBy preview, customize, store
 StandByStudio.swiftpm/   iPad Swift Playgrounds preview of all designs
 Widgets/                 WidgetKit extension (7 widgets)
 Shared/                  Code used by the app, widgets and preview: styles, faces, settings
-SharedApp/               Code used by the app and preview only (Name Tag editor)
+SharedApp/               Code used by the app and preview only (Name Tag editor, Live scenes)
 ```
 
 ## Preview on iPad (Swift Playgrounds)
@@ -53,5 +56,5 @@ Every push runs `.github/workflows/build.yml` on GitHub's Macs. It builds the ap
 
 ## Before the App Store
 
-- Create the 4 non-consumable products in App Store Connect with the same IDs as `Shared/Pack.swift`.
+- Create the 5 non-consumable products in App Store Connect with the same IDs as `Shared/Pack.swift`.
 - Add an app icon (1024x1024) to `App/Assets.xcassets/AppIcon.appiconset`.

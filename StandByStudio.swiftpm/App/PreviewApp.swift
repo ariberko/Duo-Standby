@@ -37,7 +37,19 @@ struct PreviewGallery: View {
                     Text("Tap any design to see it full screen, like StandBy. Turn the iPad sideways for two side by side.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    ForEach(Pack.allCases) { pack in
+                    NavigationLink {
+                        LiveGalleryView()
+                    } label: {
+                        Label("Live scenes: DVD Bounce, Matrix, Fireplace and more", systemImage: "play.tv")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    ForEach(Pack.allCases.filter { pack in
+                        !ClockStyle.styles(in: pack).isEmpty || StudioWidget.allCases.contains { $0.pack == pack }
+                    }) { pack in
                         VStack(alignment: .leading, spacing: 12) {
                             PackBadge(pack: pack)
                             LazyVGrid(columns: columns, spacing: 16) {

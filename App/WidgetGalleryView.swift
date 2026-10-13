@@ -31,5 +31,6 @@ struct WidgetGalleryView: View {
             .padding()
         }
         .navigationTitle("Widgets")
+        .toolbar { CustomizeButton() }
     }
 }
