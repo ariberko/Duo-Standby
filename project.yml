@@ -1,0 +1,82 @@
+# Generate the Xcode project with XcodeGen:  brew install xcodegen && xcodegen
+name: StandByStudio
+options:
+  bundleIdPrefix: com.ariberko
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  StandByStudio:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ariberko.standbystudio
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: StandBy Studio
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        CFBundleURLTypes:
+          - CFBundleURLName: com.ariberko.standbystudio
+            CFBundleURLSchemes: [standbystudio]
+    entitlements:
+      path: App/StandByStudio.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.ariberko.standbystudio
+    dependencies:
+      - target: StandByWidgets
+  StandByWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Widgets
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ariberko.standbystudio.widgets
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: StandBy Studio
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widgets/StandByWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.ariberko.standbystudio
+schemes:
+  StandByStudio:
+    build:
+      targets:
+        StandByStudio: all
+        StandByWidgets: all
+    run:
+      config: Debug
+      storeKitConfiguration: StandByStudio.storekit
+    archive:
+      config: Release
