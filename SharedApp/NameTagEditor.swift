@@ -8,6 +8,9 @@ struct NameTagEditorView: View {
 
     @State private var tag = NameTag.load()
     @State private var showingSign = false
+    @State private var saved = SavedNameTags.load()
+    @State private var namingPreset = false
+    @State private var newPresetName = ""
 
     var body: some View {
         Form {
@@ -47,6 +50,46 @@ struct NameTagEditorView: View {
                 }
             }
 
+            Section {
+                ForEach(saved) { item in
+                    Button {
+                        tag = item.tag
+                    } label: {
+                        HStack(spacing: 12) {
+                            NameTagView(tag: item.tag, accent: accent, fontDesign: fontDesign)
+                                .frame(width: 80, height: 40)
+                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(item.name)
+                                    .foregroundStyle(.primary)
+                                Text(item.tag.subtitle.isEmpty ? item.tag.title : "\(item.tag.title) · \(item.tag.subtitle)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
+                        }
+                    }
+                }
+                .onDelete { offsets in
+                    saved.remove(atOffsets: offsets)
+                    SavedNameTags.save(saved)
+                }
+                Button {
+                    newPresetName = tag.title
+                    namingPreset = true
+                } label: {
+                    Label("Save current as preset", systemImage: "plus.circle")
+                }
+            } header: {
+                Text("My presets")
+            } footer: {
+                if saved.isEmpty {
+                    Text("Make a tag you like, then save it here to use again with one tap.")
+                } else {
+                    Text("Swipe left on a preset to delete it.")
+                }
+            }
+
             Section("Text") {
                 TextField("Name or message", text: $tag.title)
                 TextField("Second line (optional)", text: $tag.subtitle)
@@ -80,9 +123,23 @@ struct NameTagEditorView: View {
             newValue.save()
             onSave()
         }
+        .alert("Save preset", isPresented: $namingPreset) {
+            TextField("Preset name", text: $newPresetName)
+            Button("Save") { savePreset() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Give it a short name.")
+        }
         .fullScreenCover(isPresented: $showingSign) {
             TentSignView(tag: tag, accent: accent, fontDesign: fontDesign)
         }
+    }
+
+    private func savePreset() {
+        let trimmed = newPresetName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = trimmed.isEmpty ? (tag.title.isEmpty ? "My preset" : tag.title) : trimmed
+        saved.insert(SavedNameTag(name: name, tag: tag), at: 0)
+        SavedNameTags.save(saved)
     }
 }
 

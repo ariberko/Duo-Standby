@@ -13,7 +13,7 @@ Built for iPhone and the new iPhone Duo. The app UI uses system containers so it
 | Pro | $2.99 | Word Clock, Binary, Studio | Countdown, Quote (tap to shuffle), Photo Clock |
 | All Access | $4.99 | everything | everything |
 
-**Name Tag** (free): type a name and title, or pick a sign like Do Not Disturb or On a Call. Show it full screen for tent mode (the screen stays awake, and Flip turns it upside down), or add it as a StandBy widget. 5 styles: Classic, Hello, Alert, Neon, Minimal.
+**Name Tag** (free): type a name and title, or pick one of 16 signs like Do Not Disturb, Busy or Lunch Break. Save your own tags as presets. Show it full screen for tent mode (the screen stays awake, and Flip turns it upside down), or add it as a StandBy widget. 5 styles: Classic, Hello, Alert, Neon, Minimal.
 
 Every user can pick an accent color, font and 12/24-hour time. Locked styles still show in the widget picker, blurred, and tapping them opens the store.
 

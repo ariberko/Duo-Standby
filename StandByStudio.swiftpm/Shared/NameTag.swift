@@ -169,3 +169,26 @@ struct NameTagView: View {
         .lineLimit(1)
     }
 }
+
+/// A name tag the user saved as their own preset.
+struct SavedNameTag: Codable, Identifiable, Equatable {
+    var id = UUID()
+    var name: String
+    var tag: NameTag
+}
+
+enum SavedNameTags {
+    private static let key = "savedNameTags"
+
+    static func load() -> [SavedNameTag] {
+        guard let data = AppGroup.defaults.data(forKey: key),
+              let items = try? JSONDecoder().decode([SavedNameTag].self, from: data)
+        else { return [] }
+        return items
+    }
+
+    static func save(_ items: [SavedNameTag]) {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        AppGroup.defaults.set(data, forKey: key)
+    }
+}
