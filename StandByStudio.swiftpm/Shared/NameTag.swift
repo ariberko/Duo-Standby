@@ -14,6 +14,24 @@ enum NameTagStyle: String, Codable, CaseIterable, Identifiable {
         case .minimal: "Minimal"
         }
     }
+
+    static let helloRed = Color(red: 0.86, green: 0.1, blue: 0.15)
+
+    var defaultBackground: Color {
+        switch self {
+        case .classic, .hello: .white
+        case .alert: Color(red: 0.82, green: 0.08, blue: 0.12)
+        case .neon: Color(red: 0.05, green: 0.02, blue: 0.1)
+        case .minimal: .black
+        }
+    }
+
+    var defaultText: Color {
+        switch self {
+        case .classic, .hello: .black
+        case .alert, .neon, .minimal: .white
+        }
+    }
 }
 
 /// Big text for tent mode: a name and title, or a sign like "Do Not Disturb".
@@ -21,6 +39,54 @@ struct NameTag: Codable, Equatable {
     var title = "Your Name"
     var subtitle = "Your Title"
     var style: NameTagStyle = .classic
+    /// Optional color overrides. nil means "use the style's color".
+    var backgroundHex: String?
+    var textHex: String?
+    var accentHex: String?
+
+    var hasCustomColors: Bool {
+        backgroundHex != nil || textHex != nil || accentHex != nil
+    }
+
+    var backgroundColor: Color {
+        backgroundHex.map { Color(hex: $0) } ?? style.defaultBackground
+    }
+
+    var textColor: Color {
+        textHex.map { Color(hex: $0) } ?? style.defaultText
+    }
+
+    func accentColor(default appAccent: Color) -> Color {
+        accentHex.map { Color(hex: $0) } ?? (style == .hello ? NameTagStyle.helloRed : appAccent)
+    }
+
+    mutating func resetColors() {
+        backgroundHex = nil
+        textHex = nil
+        accentHex = nil
+    }
+
+    struct ColorTheme: Identifiable {
+        let id: String
+        let background: String
+        let text: String
+        let accent: String
+    }
+
+    static let colorThemes: [ColorTheme] = [
+        ColorTheme(id: "Midnight", background: "#0B1E3F", text: "#FFFFFF", accent: "#64D2FF"),
+        ColorTheme(id: "Sunshine", background: "#FFD60A", text: "#1C1C1E", accent: "#FF375F"),
+        ColorTheme(id: "Mint", background: "#D1F5E4", text: "#0B3D2E", accent: "#30D158"),
+        ColorTheme(id: "Bubblegum", background: "#FF8FC7", text: "#FFFFFF", accent: "#BF5AF2"),
+        ColorTheme(id: "Paper", background: "#F5F0E6", text: "#2B2B2B", accent: "#FF9F0A"),
+        ColorTheme(id: "Matrix", background: "#000000", text: "#30D158", accent: "#30D158"),
+    ]
+
+    mutating func apply(_ theme: ColorTheme) {
+        backgroundHex = theme.background
+        textHex = theme.text
+        accentHex = theme.accent
+    }
 
     struct Preset: Identifiable {
         let id: String
@@ -53,6 +119,7 @@ struct NameTag: Codable, Equatable {
         title = preset.title
         subtitle = preset.subtitle
         style = preset.style
+        resetColors()
     }
 
     private static let key = "nameTag"
@@ -76,7 +143,10 @@ struct NameTagView: View {
     let accent: Color
     var fontDesign: Font.Design = .rounded
 
-    private static let helloRed = Color(red: 0.86, green: 0.1, blue: 0.15)
+    private var tagAccent: Color { tag.accentColor(default: accent) }
+    private var background: Color { tag.backgroundColor }
+    private var text: Color { tag.textColor }
+    private var softText: Color { text.opacity(0.7) }
 
     var body: some View {
         GeometryReader { geo in
@@ -90,13 +160,13 @@ struct NameTagView: View {
         switch tag.style {
         case .classic:
             ZStack {
-                Color.white
-                lines(height: h, titleColor: .black, subtitleColor: accent, design: fontDesign, weight: .bold)
+                background
+                lines(height: h, titleColor: text, subtitleColor: tagAccent, design: fontDesign, weight: .bold)
                     .padding(.horizontal, h * 0.1)
                     .padding(.top, h * 0.06)
             }
             .overlay(alignment: .top) {
-                accent.frame(height: h * 0.08)
+                tagAccent.frame(height: h * 0.08)
             }
 
         case .hello:
@@ -112,34 +182,34 @@ struct NameTagView: View {
                 .lineLimit(1)
                 .padding(.vertical, h * 0.03)
                 ZStack {
-                    Color.white
-                    lines(height: h * 0.75, titleColor: .black, subtitleColor: .gray, design: .serif, weight: .semibold, italic: true)
+                    background
+                    lines(height: h * 0.75, titleColor: text, subtitleColor: softText, design: .serif, weight: .semibold, italic: true)
                         .padding(.horizontal, h * 0.08)
                 }
-                Self.helloRed.frame(height: h * 0.06)
+                tagAccent.frame(height: h * 0.06)
             }
-            .background(Self.helloRed)
+            .background(tagAccent)
 
         case .alert:
             ZStack {
-                Color(red: 0.82, green: 0.08, blue: 0.12)
-                lines(height: h, titleColor: .white, subtitleColor: .white.opacity(0.85), design: fontDesign, weight: .heavy)
+                background
+                lines(height: h, titleColor: text, subtitleColor: text.opacity(0.85), design: fontDesign, weight: .heavy)
                     .padding(.horizontal, h * 0.1)
             }
 
         case .neon:
             ZStack {
-                Color(red: 0.05, green: 0.02, blue: 0.1)
-                lines(height: h, titleColor: .white, subtitleColor: accent, design: .rounded, weight: .semibold)
-                    .shadow(color: accent, radius: h * 0.02)
-                    .shadow(color: accent, radius: h * 0.06)
+                background
+                lines(height: h, titleColor: text, subtitleColor: tagAccent, design: .rounded, weight: .semibold)
+                    .shadow(color: tagAccent, radius: h * 0.02)
+                    .shadow(color: tagAccent, radius: h * 0.06)
                     .padding(.horizontal, h * 0.1)
             }
 
         case .minimal:
             ZStack {
-                Color.black
-                lines(height: h, titleColor: .white, subtitleColor: .white.opacity(0.55), design: fontDesign, weight: .light)
+                background
+                lines(height: h, titleColor: text, subtitleColor: text.opacity(0.55), design: fontDesign, weight: .light)
                     .padding(.horizontal, h * 0.1)
             }
         }

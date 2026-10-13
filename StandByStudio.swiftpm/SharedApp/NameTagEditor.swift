@@ -95,6 +95,52 @@ struct NameTagEditorView: View {
                 TextField("Second line (optional)", text: $tag.subtitle)
             }
 
+            Section {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(NameTag.colorThemes) { theme in
+                            Button {
+                                tag.apply(theme)
+                            } label: {
+                                VStack(spacing: 4) {
+                                    Text("Aa")
+                                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                                        .foregroundStyle(Color(hex: theme.text))
+                                        .frame(width: 54, height: 40)
+                                        .background(Color(hex: theme.background), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                        .overlay(alignment: .bottom) {
+                                            Color(hex: theme.accent).frame(height: 5)
+                                                .clipShape(UnevenRoundedRectangle(bottomLeadingRadius: 8, bottomTrailingRadius: 8))
+                                        }
+                                    Text(theme.id).font(.caption2)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+                ColorPicker("Background", selection: Binding(
+                    get: { tag.backgroundColor },
+                    set: { tag.backgroundHex = $0.hexString }
+                ), supportsOpacity: false)
+                ColorPicker("Text", selection: Binding(
+                    get: { tag.textColor },
+                    set: { tag.textHex = $0.hexString }
+                ), supportsOpacity: false)
+                ColorPicker("Accent", selection: Binding(
+                    get: { tag.accentColor(default: accent) },
+                    set: { tag.accentHex = $0.hexString }
+                ), supportsOpacity: false)
+                if tag.hasCustomColors {
+                    Button("Reset to style colors") { tag.resetColors() }
+                }
+            } header: {
+                Text("Colors")
+            } footer: {
+                Text("Accent is the stripe, glow or Hello frame, depending on the style.")
+            }
+
             Section("Style") {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 12)], spacing: 12) {
                     ForEach(NameTagStyle.allCases) { style in
@@ -102,7 +148,7 @@ struct NameTagEditorView: View {
                             tag.style = style
                         } label: {
                             VStack(spacing: 6) {
-                                NameTagView(tag: NameTag(title: tag.title, subtitle: tag.subtitle, style: style), accent: accent, fontDesign: fontDesign)
+                                NameTagView(tag: styled(style), accent: accent, fontDesign: fontDesign)
                                     .aspectRatio(2, contentMode: .fit)
                                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                                     .overlay {
@@ -133,6 +179,13 @@ struct NameTagEditorView: View {
         .fullScreenCover(isPresented: $showingSign) {
             TentSignView(tag: tag, accent: accent, fontDesign: fontDesign)
         }
+    }
+
+    /// The current tag drawn in another style, keeping the user's colors.
+    private func styled(_ style: NameTagStyle) -> NameTag {
+        var copy = tag
+        copy.style = style
+        return copy
     }
 
     private func savePreset() {
