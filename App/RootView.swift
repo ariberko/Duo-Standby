@@ -1,7 +1,8 @@
 import SwiftUI
+import WidgetKit
 
 enum AppTab: Hashable {
-    case clocks, widgets, customize, store
+    case clocks, nameTag, widgets, customize, store
 }
 
 struct RootView: View {
@@ -12,6 +13,9 @@ struct RootView: View {
             NavigationStack { ClockGalleryView() }
                 .tabItem { Label("Clocks", systemImage: "clock") }
                 .tag(AppTab.clocks)
+            NavigationStack { NameTagTab() }
+                .tabItem { Label("Name Tag", systemImage: "person.text.rectangle") }
+                .tag(AppTab.nameTag)
             NavigationStack { WidgetGalleryView() }
                 .tabItem { Label("Widgets", systemImage: "square.grid.2x2") }
                 .tag(AppTab.widgets)
@@ -24,6 +28,16 @@ struct RootView: View {
         }
         .onOpenURL { url in
             if url.host == "store" { tab = .store }
+        }
+    }
+}
+
+struct NameTagTab: View {
+    @EnvironmentObject private var model: SettingsModel
+
+    var body: some View {
+        NameTagEditorView(accent: model.settings.accent, fontDesign: model.settings.font.design) {
+            WidgetCenter.shared.reloadTimelines(ofKind: WidgetKinds.nameTag)
         }
     }
 }

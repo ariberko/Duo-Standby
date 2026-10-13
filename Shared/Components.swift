@@ -63,6 +63,8 @@ struct StudioWidgetTile: View {
     @ViewBuilder
     private var content: some View {
         switch widget {
+        case .nameTag:
+            NameTagView(tag: NameTag.load(), accent: settings.accent, fontDesign: settings.font.design)
         case .calendar:
             CalendarFace(date: date, settings: settings)
         case .battery:

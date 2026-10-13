@@ -19,6 +19,7 @@ targets:
     sources:
       - App
       - Shared
+      - SharedApp
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ariberko.standbystudio

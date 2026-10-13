@@ -7,11 +7,13 @@ Built for iPhone and the new iPhone Duo. The app UI uses system containers so it
 
 | Pack | Price | Clocks | Widgets |
 |------|-------|--------|---------|
-| Free | free | Flip, Minimal, Analog, Bold | Calendar, Battery |
+| Free | free | Flip, Minimal, Analog, Bold | Name Tag, Calendar, Battery |
 | Retro | $1.99 | Neon, LCD, Terminal, Synthwave | |
 | Space | $1.99 | Galaxy, Aurora, Nebula, Orbit | Moon Phase |
 | Pro | $2.99 | Word Clock, Binary, Studio | Countdown, Quote (tap to shuffle), Photo Clock |
 | All Access | $4.99 | everything | everything |
+
+**Name Tag** (free): type a name and title, or pick a sign like Do Not Disturb or On a Call. Show it full screen for tent mode (the screen stays awake, and Flip turns it upside down), or add it as a StandBy widget. 5 styles: Classic, Hello, Alert, Neon, Minimal.
 
 Every user can pick an accent color, font and 12/24-hour time. Locked styles still show in the widget picker, blurred, and tapping them opens the store.
 
@@ -23,7 +25,8 @@ StandByStudio.storekit   Local StoreKit products for testing purchases
 App/                     The iOS app (gallery, StandBy preview, customize, store)
 StandByStudio.swiftpm/   iPad Swift Playgrounds preview of all designs
 Widgets/                 WidgetKit extension (7 widgets)
-Shared/                  Code used by both: styles, faces, settings, purchases
+Shared/                  Code used by the app, widgets and preview: styles, faces, settings
+SharedApp/               Code used by the app and preview only (Name Tag editor)
 ```
 
 ## Preview on iPad (Swift Playgrounds)
@@ -35,7 +38,7 @@ Shared/                  Code used by both: styles, faces, settings, purchases
 3. Open the folder and tap **StandByStudio.swiftpm**. It opens in Swift Playgrounds.
 4. Tap ▶︎ to run. Tap any design for a full screen StandBy look. Turn the iPad sideways.
 
-The preview keeps its own copy of `Shared/`. After changing `Shared/`, run `./scripts/sync-playground.sh`.
+The preview keeps its own copy of `Shared/` and `SharedApp/`. After changing them, run `./scripts/sync-playground.sh`.
 
 ## Automatic checks
 

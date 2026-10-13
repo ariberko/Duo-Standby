@@ -44,13 +44,13 @@ enum ClockStyle: String, CaseIterable, Codable, Identifiable {
 
 /// Non-clock widgets.
 enum StudioWidget: String, CaseIterable, Identifiable {
-    case calendar, battery, moon, countdown, quote, photo
+    case nameTag, calendar, battery, moon, countdown, quote, photo
 
     var id: String { rawValue }
 
     var pack: Pack {
         switch self {
-        case .calendar, .battery: .free
+        case .nameTag, .calendar, .battery: .free
         case .moon: .space
         case .countdown, .quote, .photo: .pro
         }
@@ -58,6 +58,7 @@ enum StudioWidget: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
+        case .nameTag: "Name Tag"
         case .calendar: "Calendar"
         case .battery: "Battery"
         case .moon: "Moon Phase"
@@ -69,6 +70,7 @@ enum StudioWidget: String, CaseIterable, Identifiable {
 
     var summary: String {
         switch self {
+        case .nameTag: "Your name and title, or a Do Not Disturb sign."
         case .calendar: "Today's date as a calendar page."
         case .battery: "Charge level with a glowing ring."
         case .moon: "Tonight's moon and how much is lit."
@@ -78,5 +80,5 @@ enum StudioWidget: String, CaseIterable, Identifiable {
         }
     }
 
-    var contentPadding: CGFloat { self == .photo ? 0 : 12 }
+    var contentPadding: CGFloat { self == .photo || self == .nameTag ? 0 : 12 }
 }

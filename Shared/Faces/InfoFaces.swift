@@ -227,7 +227,7 @@ struct StudioWidgetBackground: View {
         switch widget {
         case .calendar, .quote:
             Color(white: 0.08)
-        case .battery, .photo:
+        case .battery, .photo, .nameTag:
             Color.black
         case .moon:
             ZStack {

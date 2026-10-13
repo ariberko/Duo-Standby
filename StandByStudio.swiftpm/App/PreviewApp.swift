@@ -26,6 +26,7 @@ struct PreviewGallery: View {
     @State private var settings = StudioSettings.load()
     @State private var showing: PreviewItem?
     @State private var showingSettings = false
+    @State private var showingNameTag = false
 
     private let columns = [GridItem(.adaptive(minimum: 150), spacing: 16)]
 
@@ -55,10 +56,20 @@ struct PreviewGallery: View {
             .navigationTitle("StandBy Studio")
             .toolbar {
                 Button {
+                    showingNameTag = true
+                } label: {
+                    Label("Name Tag", systemImage: "person.text.rectangle")
+                }
+                Button {
                     showingSettings = true
                 } label: {
                     Label("Customize", systemImage: "paintpalette")
                 }
+            }
+        }
+        .sheet(isPresented: $showingNameTag) {
+            NavigationStack {
+                NameTagEditorView(accent: settings.accent, fontDesign: settings.font.design)
             }
         }
         .sheet(isPresented: $showingSettings) {

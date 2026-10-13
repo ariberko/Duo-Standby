@@ -5,6 +5,7 @@ import WidgetKit
 struct StandByWidgetsBundle: WidgetBundle {
     var body: some Widget {
         ClockWidget()
+        NameTagWidget()
         CalendarWidget()
         BatteryWidget()
         MoonWidget()

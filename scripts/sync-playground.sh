@@ -3,6 +3,7 @@
 # Playgrounds can't read files outside its own folder, so it keeps a copy.
 set -e
 cd "$(dirname "$0")/.."
-rm -rf StandByStudio.swiftpm/Shared
+rm -rf StandByStudio.swiftpm/Shared StandByStudio.swiftpm/SharedApp
 cp -R Shared StandByStudio.swiftpm/Shared
-echo "Synced Shared/ into StandByStudio.swiftpm/Shared"
+cp -R SharedApp StandByStudio.swiftpm/SharedApp
+echo "Synced Shared/ and SharedApp/ into StandByStudio.swiftpm"

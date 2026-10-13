@@ -17,7 +17,7 @@ enum Pack: String, CaseIterable, Codable, Identifiable {
 
     var tagline: String {
         switch self {
-        case .free: "Flip, Minimal, Analog, Bold, Calendar and Battery."
+        case .free: "Flip, Minimal, Analog, Bold, Name Tag, Calendar and Battery."
         case .retro: "Neon, LCD, Terminal and Synthwave clocks."
         case .space: "Galaxy, Aurora, Nebula, Orbit and the Moon widget."
         case .pro: "Word Clock, Binary, Studio plus Countdown, Quote and Photo widgets."
