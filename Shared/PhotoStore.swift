@@ -7,7 +7,7 @@ enum PhotoStore {
     }
 
     static func save(_ image: UIImage) throws {
-        guard let url, let data = image.resized(maxSide: 600).jpegData(compressionQuality: 0.85) else { return }
+        guard let url, let data = image.resized(maxSide: 480).jpegData(compressionQuality: 0.85) else { return }
         try data.write(to: url, options: .atomic)
     }
 

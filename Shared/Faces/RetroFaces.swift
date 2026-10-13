@@ -93,7 +93,7 @@ struct TerminalFace: View {
             }
             .foregroundStyle(terminalGreen)
             .shadow(color: terminalGreen.opacity(0.6), radius: 6)
-            Text(date, format: .iso8601.year().month().day())
+            Text(date, format: Date.ISO8601FormatStyle(timeZone: .current).year().month().day())
                 .font(.system(size: 12, weight: .medium, design: .monospaced))
                 .foregroundStyle(terminalGreen.opacity(0.8))
             Text(time.ampm.map { "mode: \($0)" } ?? "mode: 24h")

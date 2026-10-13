@@ -31,6 +31,5 @@ struct WidgetGalleryView: View {
             .padding()
         }
         .navigationTitle("Widgets")
-        .onAppear { UIDevice.current.isBatteryMonitoringEnabled = true }
     }
 }

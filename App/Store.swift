@@ -13,7 +13,7 @@ final class Store: ObservableObject {
 
     init() {
         updates = Task { [weak self] in
-            for await result in Transaction.updates {
+            for await result in StoreKit.Transaction.updates {
                 if case .verified(let transaction) = result {
                     await transaction.finish()
                     await self?.refreshEntitlements()
@@ -66,7 +66,7 @@ final class Store: ObservableObject {
 
     func refreshEntitlements() async {
         var packs: Set<Pack> = [.free]
-        for await result in Transaction.currentEntitlements {
+        for await result in StoreKit.Transaction.currentEntitlements {
             if case .verified(let transaction) = result, transaction.revocationDate == nil {
                 packs.formUnion(StoreProducts.packs(for: transaction.productID))
             }

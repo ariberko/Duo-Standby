@@ -6,7 +6,7 @@ struct WidgetTile<Content: View, Background: View>: View {
     @ViewBuilder var content: Content
     @ViewBuilder var background: Background
 
-    private static let side: CGFloat = 158
+    private static var side: CGFloat { 158 }
 
     var body: some View {
         GeometryReader { geo in
@@ -43,6 +43,14 @@ struct StudioWidgetTile: View {
     let date: Date
     let settings: StudioSettings
     let photo: UIImage?
+
+    init(widget: StudioWidget, date: Date, settings: StudioSettings, photo: UIImage?) {
+        self.widget = widget
+        self.date = date
+        self.settings = settings
+        self.photo = photo
+        UIDevice.current.isBatteryMonitoringEnabled = true
+    }
 
     var body: some View {
         WidgetTile(padding: widget.contentPadding) {

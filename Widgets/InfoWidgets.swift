@@ -149,6 +149,7 @@ struct NextQuoteIntent: AppIntent {
     static var title: LocalizedStringResource = "Next Quote"
 
     func perform() async throws -> some IntentResult {
+        guard Entitlements.isUnlocked(.pro) else { return .result() }
         QuoteBook.advance()
         return .result()
     }
@@ -186,14 +187,16 @@ struct QuoteWidget: Widget {
         StaticConfiguration(kind: WidgetKinds.quote, provider: QuoteProvider()) { entry in
             ZStack(alignment: .bottomTrailing) {
                 QuoteFace(text: entry.text, settings: entry.settings)
-                Button(intent: NextQuoteIntent()) {
-                    Image(systemName: "shuffle")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.black)
-                        .frame(width: 30, height: 30)
-                        .background(entry.settings.accent, in: Circle())
+                if !entry.isLocked {
+                    Button(intent: NextQuoteIntent()) {
+                        Image(systemName: "shuffle")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(.black)
+                            .frame(width: 30, height: 30)
+                            .background(entry.settings.accent, in: Circle())
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
             .padding(12)
             .locked(entry.isLocked, pack: .pro)
