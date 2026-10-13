@@ -37,6 +37,16 @@ struct NameTag: Codable, Equatable {
         Preset(id: "On a Call", symbol: "phone.fill", title: "On a Call", subtitle: "Please wait", style: .alert),
         Preset(id: "Back Soon", symbol: "clock", title: "Back in 5", subtitle: "Grabbing coffee", style: .minimal),
         Preset(id: "Welcome", symbol: "sparkles", title: "Welcome!", subtitle: "Come on in", style: .neon),
+        Preset(id: "Busy", symbol: "xmark.circle.fill", title: "Busy", subtitle: "Talk later", style: .alert),
+        Preset(id: "Lunch Break", symbol: "fork.knife", title: "Lunch Break", subtitle: "Back at 1:00", style: .classic),
+        Preset(id: "Focus", symbol: "brain.head.profile", title: "Focus Time", subtitle: "Deep work in progress", style: .minimal),
+        Preset(id: "Recording", symbol: "record.circle", title: "Recording", subtitle: "Quiet please", style: .alert),
+        Preset(id: "Available", symbol: "checkmark.circle.fill", title: "Available", subtitle: "Come say hi", style: .neon),
+        Preset(id: "Be Right Back", symbol: "figure.walk", title: "Be Right Back", subtitle: "", style: .minimal),
+        Preset(id: "Quiet Please", symbol: "speaker.slash.fill", title: "Quiet Please", subtitle: "Someone is sleeping", style: .minimal),
+        Preset(id: "Out of Office", symbol: "airplane", title: "Out of Office", subtitle: "Back next week", style: .classic),
+        Preset(id: "Gaming", symbol: "gamecontroller.fill", title: "Gaming", subtitle: "Do not pause me", style: .neon),
+        Preset(id: "Birthday", symbol: "birthday.cake", title: "Happy Birthday!", subtitle: "", style: .hello),
     ]
 
     mutating func apply(_ preset: Preset) {
