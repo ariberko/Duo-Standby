@@ -1,0 +1,53 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  playground-in-sync:
+    name: Playground copy is up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check StandByStudio.swiftpm/Shared matches Shared
+        run: |
+          ./scripts/sync-playground.sh
+          git diff --exit-code || (echo "Run ./scripts/sync-playground.sh and commit." && exit 1)
+          test -z "$(git status --porcelain)" || (git status --porcelain && echo "Run ./scripts/sync-playground.sh and commit." && exit 1)
+
+  xcode-app:
+    name: App + widgets (Xcode)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build for iOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project StandByStudio.xcodeproj \
+            -scheme StandByStudio \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -n 200
+
+  playground-app:
+    name: iPad Playgrounds preview
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the .swiftpm app for iOS Simulator
+        working-directory: StandByStudio.swiftpm
+        run: |
+          set -o pipefail
+          xcodebuild -list
+          xcodebuild build \
+            -scheme "StandBy Studio Preview" \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -n 200

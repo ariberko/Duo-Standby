@@ -21,9 +21,25 @@ Every user can pick an accent color, font and 12/24-hour time. Locked styles sti
 project.yml              XcodeGen spec (app + widget extension)
 StandByStudio.storekit   Local StoreKit products for testing purchases
 App/                     The iOS app (gallery, StandBy preview, customize, store)
+StandByStudio.swiftpm/   iPad Swift Playgrounds preview of all designs
 Widgets/                 WidgetKit extension (7 widgets)
 Shared/                  Code used by both: styles, faces, settings, purchases
 ```
+
+## Preview on iPad (Swift Playgrounds)
+
+`StandByStudio.swiftpm` is a small preview app with every clock and widget design. It has no real widgets or purchases.
+
+1. On the iPad open this repo on github.com in Safari. Tap **Code** then **Download ZIP**.
+2. In the **Files** app tap the ZIP to unzip it.
+3. Open the folder and tap **StandByStudio.swiftpm**. It opens in Swift Playgrounds.
+4. Tap ▶︎ to run. Tap any design for a full screen StandBy look. Turn the iPad sideways.
+
+The preview keeps its own copy of `Shared/`. After changing `Shared/`, run `./scripts/sync-playground.sh`.
+
+## Automatic checks
+
+Every push runs `.github/workflows/build.yml` on GitHub's Macs. It builds the app with its widgets, builds the iPad preview, and checks the preview copy is up to date.
 
 ## Build
 
