@@ -57,4 +57,4 @@ Every push runs `.github/workflows/build.yml` on GitHub's Macs. It builds the ap
 ## Before the App Store
 
 - Create the 5 non-consumable products in App Store Connect with the same IDs as `Shared/Pack.swift`.
-- Add an app icon (1024x1024) to `App/Assets.xcassets/AppIcon.appiconset`.
+- The app icon is drawn by `scripts/make_icon.py` (run it again after changing the design).
