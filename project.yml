@@ -28,7 +28,8 @@ targets:
     info:
       path: App/Info.plist
       properties:
-        CFBundleDisplayName: StandBy Studio
+        CFBundleDisplayName: Duo StandBy
+        ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true
         UISupportedInterfaceOrientations:
@@ -62,7 +63,7 @@ targets:
     info:
       path: Widgets/Info.plist
       properties:
-        CFBundleDisplayName: StandBy Studio
+        CFBundleDisplayName: Duo StandBy
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

@@ -54,6 +54,16 @@ Every push runs `.github/workflows/build.yml` on GitHub's Macs. It builds the ap
 3. Both targets use the App Group `group.com.ariberkowitz.standbystudio`. Register it in your Apple Developer account (or change it in `project.yml` and `Shared/AppGroup.swift`).
 4. Run the `StandByStudio` scheme. Purchases use `StandByStudio.storekit`, so no real money is charged.
 
+## Upload to TestFlight without a Mac
+
+`.github/workflows/testflight.yml` archives the app on GitHub's Mac and uploads it to App Store Connect.
+
+1. App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys → **+**. Name it `GitHub`, access **Admin**. Download the `.p8` file (only possible once).
+2. GitHub repo → Settings → Secrets and variables → Actions → New repository secret. Add `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_KEY_P8` (open the `.p8` file in Notepad and paste all of it).
+3. Run **Upload to TestFlight** from the Actions tab, or push a tag like `release-1`.
+
+Don't upload the Swift Playgrounds preview. It is only for looking at designs.
+
 ## Before the App Store
 
 - Create the 5 non-consumable products in App Store Connect with the same IDs as `Shared/Pack.swift`.
