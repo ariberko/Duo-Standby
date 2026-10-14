@@ -9,6 +9,9 @@ on:
     branches:
       - "**"
 
+permissions:
+  contents: write
+
 jobs:
   check:
     if: github.event_name != 'push' || contains(github.event.head_commit.message, '[widgetcheck]')
@@ -33,23 +36,28 @@ jobs:
           echo "UDID=$udid" >> "$GITHUB_ENV"
           xcrun simctl boot "$udid"
           xcrun simctl bootstatus "$udid"
-      - name: Build
+      - name: Open the widget gallery in the simulator
         run: |
+          mkdir -p "$RUNNER_TEMP/shots"
           set -o pipefail
-          xcodebuild build -project StandByStudio.xcodeproj -scheme StandByStudio \
-            -destination "id=$UDID" -derivedDataPath build CODE_SIGNING_ALLOWED=NO | tail -n 20
-      - name: Install, launch and collect widget logs
+          TEST_RUNNER_OUTPUT_DIR="$RUNNER_TEMP/shots" xcodebuild test \
+            -project StandByStudio.xcodeproj -scheme StandByStudio \
+            -destination "id=$UDID" -derivedDataPath build CODE_SIGNING_ALLOWED=NO \
+            | grep -vE "^(CompileSwift|SwiftCompile|Ld |CodeSign|ProcessInfoPlistFile|CopySwiftLibs|Touch|RegisterExecutionPolicy|Validate|GenerateAssetSymbols|ProcessProductPackaging|SwiftDriver|ExtractAppIntentsMetadata|WriteAuxiliaryFile|CreateBuildDirectory|MkDir|Copy|builtin)" | tail -n 400 || true
+          ls -la "$RUNNER_TEMP/shots"
+      - name: Crash reports
         run: |
-          start=$(date "+%Y-%m-%d %H:%M:%S")
-          xcrun simctl install "$UDID" build/Build/Products/Debug-iphonesimulator/StandByStudio.app
-          xcrun simctl launch "$UDID" com.ariberkowitz.standbystudio -screenshotTab clocks
-          sleep 45
-          echo "===== Registered extension ====="
-          xcrun simctl spawn "$UDID" pluginkit -m -v -i com.ariberkowitz.standbystudio.widgets || true
-          echo "===== Widget logs ====="
-          xcrun simctl spawn "$UDID" log show --start "$start" --style compact \
-            --predicate 'process == "chronod" OR process CONTAINS "StandByWidgets" OR eventMessage CONTAINS[c] "standbystudio"' \
-            | grep -iE "standbystudio|StandByWidgets|descriptor|error|fault|crash|exception" | tail -n 300 || true
-          echo "===== Crash reports ====="
-          ls -la ~/Library/Logs/DiagnosticReports 2>/dev/null | tail -n 20 || true
-          for f in $(ls ~/Library/Logs/DiagnosticReports/StandByWidgets* 2>/dev/null); do echo "--- $f"; head -n 120 "$f"; done
+          ls -la ~/Library/Logs/DiagnosticReports | tail -n 20 || true
+          for f in $(ls ~/Library/Logs/DiagnosticReports/*StandByWidgets* 2>/dev/null); do echo "--- $f"; head -n 150 "$f"; done
+          echo "===== chronod / extension logs ====="
+          xcrun simctl spawn "$UDID" log show --last 15m --style compact \
+            --predicate 'process == "chronod" OR process CONTAINS "StandByWidgets"' \
+            | grep -iE "standbystudio|StandByWidgets" | tail -n 200 || true
+      - name: Save screenshots to the "widget-check" branch
+        run: |
+          cd "$RUNNER_TEMP/shots"
+          git init -q
+          git checkout -q -b widget-check
+          git add .
+          git -c user.name="github-actions" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Widget check from ${{ github.sha }}" || true
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:widget-check

@@ -75,12 +75,27 @@ targets:
       properties:
         com.apple.security.application-groups:
           - group.com.ariberkowitz.standbystudio
+  StandByStudioUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+    dependencies:
+      - target: StandByStudio
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ariberkowitz.standbystudio.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: StandByStudio
 schemes:
   StandByStudio:
     build:
       targets:
         StandByStudio: all
         StandByWidgets: all
+    test:
+      targets:
+        - StandByStudioUITests
     run:
       config: Debug
       storeKitConfiguration: StandByStudio.storekit
