@@ -1,0 +1,55 @@
+name: Widget check
+
+# Installs the app on a simulator and prints what the widget system logs about our extension,
+# plus any crash reports. Starts by hand, or from a commit whose message contains "[widgetcheck]".
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  check:
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[widgetcheck]')
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use the newest Xcode
+        run: |
+          xcode=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$xcode/Contents/Developer"
+      - name: Generate project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+      - name: Boot a simulator
+        run: |
+          udid=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = [d for runtime, ds in json.load(sys.stdin)["devices"].items() if "iOS" in runtime for d in ds]
+          best = [d for d in devices if "Pro" in d["name"]] or [d for d in devices if "iPhone" in d["name"]]
+          print(best[-1]["udid"])')
+          echo "UDID=$udid" >> "$GITHUB_ENV"
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid"
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild build -project StandByStudio.xcodeproj -scheme StandByStudio \
+            -destination "id=$UDID" -derivedDataPath build CODE_SIGNING_ALLOWED=NO | tail -n 20
+      - name: Install, launch and collect widget logs
+        run: |
+          start=$(date "+%Y-%m-%d %H:%M:%S")
+          xcrun simctl install "$UDID" build/Build/Products/Debug-iphonesimulator/StandByStudio.app
+          xcrun simctl launch "$UDID" com.ariberkowitz.standbystudio -screenshotTab clocks
+          sleep 45
+          echo "===== Registered extension ====="
+          xcrun simctl spawn "$UDID" pluginkit -m -v -i com.ariberkowitz.standbystudio.widgets || true
+          echo "===== Widget logs ====="
+          xcrun simctl spawn "$UDID" log show --start "$start" --style compact \
+            --predicate 'process == "chronod" OR process CONTAINS "StandByWidgets" OR eventMessage CONTAINS[c] "standbystudio"' \
+            | grep -iE "standbystudio|StandByWidgets|descriptor|error|fault|crash|exception" | tail -n 300 || true
+          echo "===== Crash reports ====="
+          ls -la ~/Library/Logs/DiagnosticReports 2>/dev/null | tail -n 20 || true
+          for f in $(ls ~/Library/Logs/DiagnosticReports/StandByWidgets* 2>/dev/null); do echo "--- $f"; head -n 120 "$f"; done
