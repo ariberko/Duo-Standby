@@ -79,7 +79,6 @@ jobs:
             -authenticationKeyID "$(printf '%s' "$ASC_KEY_ID" | tr -d '[:space:]')" \
             -authenticationKeyIssuerID "$(printf '%s' "$ASC_ISSUER_ID" | tr -d '[:space:]')" \
             CODE_SIGN_STYLE=Automatic \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
             DEVELOPMENT_TEAM=HKA3SA3729 \
             CURRENT_PROJECT_VERSION=${{ github.run_number }} \
             | tail -n 100
