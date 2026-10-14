@@ -7,7 +7,7 @@
       "familyShareable" : true,
       "internalID" : "6740000001",
       "localizations" : [ { "description" : "Neon, LCD, Terminal and Synthwave clocks.", "displayName" : "Retro Pack", "locale" : "en_US" } ],
-      "productID" : "com.ariberko.standbystudio.retro",
+      "productID" : "com.ariberkowitz.standbystudio.retro",
       "referenceName" : "Retro Pack",
       "type" : "NonConsumable"
     },
@@ -16,7 +16,7 @@
       "familyShareable" : true,
       "internalID" : "6740000002",
       "localizations" : [ { "description" : "Galaxy, Aurora, Nebula and Orbit clocks plus the Moon widget.", "displayName" : "Space Pack", "locale" : "en_US" } ],
-      "productID" : "com.ariberko.standbystudio.space",
+      "productID" : "com.ariberkowitz.standbystudio.space",
       "referenceName" : "Space Pack",
       "type" : "NonConsumable"
     },
@@ -25,7 +25,7 @@
       "familyShareable" : true,
       "internalID" : "6740000003",
       "localizations" : [ { "description" : "Word, Binary and Studio clocks plus Countdown, Quote and Photo widgets.", "displayName" : "Pro Pack", "locale" : "en_US" } ],
-      "productID" : "com.ariberko.standbystudio.pro",
+      "productID" : "com.ariberkowitz.standbystudio.pro",
       "referenceName" : "Pro Pack",
       "type" : "NonConsumable"
     },
@@ -34,7 +34,7 @@
       "familyShareable" : true,
       "internalID" : "6740000005",
       "localizations" : [ { "description" : "DVD Bounce, Matrix, Starfield, Mystify, Fireplace, Candle and Lava Lamp.", "displayName" : "Live Pack", "locale" : "en_US" } ],
-      "productID" : "com.ariberko.standbystudio.live",
+      "productID" : "com.ariberkowitz.standbystudio.live",
       "referenceName" : "Live Pack",
       "type" : "NonConsumable"
     },
@@ -43,7 +43,7 @@
       "familyShareable" : true,
       "internalID" : "6740000004",
       "localizations" : [ { "description" : "Every pack, now and in the future.", "displayName" : "All Access", "locale" : "en_US" } ],
-      "productID" : "com.ariberko.standbystudio.all",
+      "productID" : "com.ariberkowitz.standbystudio.all",
       "referenceName" : "All Access",
       "type" : "NonConsumable"
     }

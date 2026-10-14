@@ -15,7 +15,7 @@ let package = Package(
         .iOSApplication(
             name: "StandBy Studio Preview",
             targets: ["AppModule"],
-            bundleIdentifier: "com.ariberko.standbystudio.preview",
+            bundleIdentifier: "com.ariberkowitz.standbystudio.preview",
             displayVersion: "1.0",
             bundleVersion: "1",
             appIcon: .placeholder(icon: .clock),

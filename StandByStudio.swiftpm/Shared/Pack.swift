@@ -37,12 +37,12 @@ enum Pack: String, CaseIterable, Codable, Identifiable {
     }
 
     var productID: String? {
-        self == .free ? nil : "com.ariberko.standbystudio.\(rawValue)"
+        self == .free ? nil : "com.ariberkowitz.standbystudio.\(rawValue)"
     }
 }
 
 enum StoreProducts {
-    static let allAccess = "com.ariberko.standbystudio.all"
+    static let allAccess = "com.ariberkowitz.standbystudio.all"
 
     static var all: [String] {
         Pack.allCases.compactMap(\.productID) + [allAccess]

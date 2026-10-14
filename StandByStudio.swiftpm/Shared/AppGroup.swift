@@ -2,7 +2,7 @@ import Foundation
 
 /// Storage shared between the app and the widget extension.
 enum AppGroup {
-    static let id = "group.com.ariberko.standbystudio"
+    static let id = "group.com.ariberkowitz.standbystudio"
 
     static var defaults: UserDefaults {
         UserDefaults(suiteName: id) ?? .standard
