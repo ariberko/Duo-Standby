@@ -43,7 +43,19 @@ jobs:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
         run: |
           mkdir -p "$RUNNER_TEMP/keys"
-          printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey.p8"
+          # Rebuild a clean PEM file: drop Windows line endings, spaces and the header lines,
+          # then wrap the key body at 64 characters, so a messy paste still works.
+          body=$(printf '%s' "$ASC_KEY_P8" | tr -d '\r' | sed '/-----/d' | tr -d ' \t\n')
+          {
+            echo "-----BEGIN PRIVATE KEY-----"
+            printf '%s' "$body" | fold -w 64
+            echo
+            echo "-----END PRIVATE KEY-----"
+          } > "$RUNNER_TEMP/keys/AuthKey.p8"
+          if ! openssl pkey -in "$RUNNER_TEMP/keys/AuthKey.p8" -noout 2>/dev/null; then
+            echo "::error::ASC_KEY_P8 is not a valid .p8 key. Open AuthKey_XXXX.p8 in Notepad, copy all of it and save the secret again."
+            exit 1
+          fi
 
       - name: Generate project
         run: |
@@ -64,8 +76,8 @@ jobs:
             -archivePath "$RUNNER_TEMP/StandByStudio.xcarchive" \
             -allowProvisioningUpdates \
             -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey.p8" \
-            -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            -authenticationKeyID "$(printf '%s' "$ASC_KEY_ID" | tr -d '[:space:]')" \
+            -authenticationKeyIssuerID "$(printf '%s' "$ASC_ISSUER_ID" | tr -d '[:space:]')" \
             CURRENT_PROJECT_VERSION=${{ github.run_number }} \
             | tail -n 100
 
@@ -99,8 +111,8 @@ jobs:
             -exportPath "$RUNNER_TEMP/export" \
             -allowProvisioningUpdates \
             -authenticationKeyPath "$RUNNER_TEMP/keys/AuthKey.p8" \
-            -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            -authenticationKeyID "$(printf '%s' "$ASC_KEY_ID" | tr -d '[:space:]')" \
+            -authenticationKeyIssuerID "$(printf '%s' "$ASC_ISSUER_ID" | tr -d '[:space:]')" \
             | tail -n 100
 
       - name: Remove API key
