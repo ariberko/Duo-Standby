@@ -23,38 +23,6 @@ struct CalendarFace: View {
     }
 }
 
-struct BatteryFace: View {
-    /// 0...1, or a negative number when unknown.
-    let level: Float
-    let isCharging: Bool
-    let settings: StudioSettings
-
-    private var fraction: Double { level < 0 ? 0 : Double(level) }
-    private var color: Color { level >= 0 && level < 0.2 ? .red : .green }
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.white.opacity(0.12), lineWidth: 14)
-            Circle()
-                .trim(from: 0, to: fraction)
-                .stroke(color, style: StrokeStyle(lineWidth: 14, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .shadow(color: color.opacity(0.6), radius: 6)
-            VStack(spacing: 2) {
-                Image(systemName: isCharging ? "bolt.fill" : "iphone")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(color)
-                Text(verbatim: level < 0 ? "--" : "\(Int((fraction * 100).rounded()))%")
-                    .font(.system(size: 28, weight: .bold, design: settings.font.design))
-                    .monospacedDigit()
-                    .foregroundStyle(.white)
-            }
-        }
-        .padding(6)
-    }
-}
-
 /// The lit part of the moon for a phase between 0 (new) and 1.
 struct MoonLitShape: Shape {
     let phase: Double
@@ -227,7 +195,7 @@ struct StudioWidgetBackground: View {
         switch widget {
         case .calendar, .quote:
             Color(white: 0.08)
-        case .battery, .photo, .nameTag:
+        case .photo, .nameTag:
             Color.black
         case .moon:
             ZStack {

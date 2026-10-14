@@ -49,7 +49,6 @@ struct StudioWidgetTile: View {
         self.date = date
         self.settings = settings
         self.photo = photo
-        UIDevice.current.isBatteryMonitoringEnabled = true
     }
 
     var body: some View {
@@ -67,12 +66,6 @@ struct StudioWidgetTile: View {
             NameTagView(tag: NameTag.load(), accent: settings.accent, fontDesign: settings.font.design)
         case .calendar:
             CalendarFace(date: date, settings: settings)
-        case .battery:
-            BatteryFace(
-                level: UIDevice.current.batteryLevel,
-                isCharging: UIDevice.current.batteryState == .charging || UIDevice.current.batteryState == .full,
-                settings: settings
-            )
         case .moon:
             MoonFace(date: date).padding(2)
         case .countdown:

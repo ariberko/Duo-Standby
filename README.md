@@ -7,7 +7,7 @@ Built for iPhone and the new iPhone Duo. The app UI uses system containers so it
 
 | Pack | Price | Clocks | Widgets |
 |------|-------|--------|---------|
-| Free | free | Flip, Minimal, Analog, Bold | Name Tag, Calendar, Battery |
+| Free | free | Flip, Minimal, Analog, Bold | Name Tag, Calendar |
 | Retro | $1.99 | Neon, LCD, Terminal, Synthwave | |
 | Space | $1.99 | Galaxy, Aurora, Nebula, Orbit | Moon Phase |
 | Pro | $2.99 | Word Clock, Binary, Studio | Countdown, Quote (tap to shuffle), Photo Clock |
@@ -17,6 +17,8 @@ Built for iPhone and the new iPhone Duo. The app UI uses system containers so it
 **Name Tag** (free): type a name and title, or pick one of 16 signs like Do Not Disturb, Busy or Lunch Break. Pick your own background, text and accent colors (or a quick theme). Save your own tags as presets. Show it full screen for tent mode (the screen stays awake, and Flip turns it upside down), or add it as a StandBy widget. 5 styles: Classic, Hello, Alert, Neon, Minimal.
 
 **Live scenes** (Live tab): full screen animations made natively with SwiftUI `TimelineView` and `Canvas`. Free: LED Scroller, Talk Timer, Now Serving. Live Pack: DVD Bounce (with corner hits!), Matrix Rain, Starfield, Mystify, Fireplace, Candle, Lava Lamp. They run in the app, not as widgets, because widgets can't animate.
+
+**Widgets**: every clock style is its own widget (small, medium and large), plus Clock: Any Style, Live Scene (tap to open a scene full screen, also from StandBy), Name Tag, Calendar, Moon, Countdown, Quote and Photo. Lock Screen: Countdown, Moon, Name Tag and Quote. StandBy only shows small widgets.
 
 Every user can pick an accent color, font and 12/24-hour time. Locked styles still show in the widget picker, blurred, and tapping them opens the store.
 

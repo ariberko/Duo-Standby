@@ -65,7 +65,7 @@ struct PreviewGallery: View {
                 }
                 .padding()
             }
-            .navigationTitle("StandBy Studio")
+            .navigationTitle("Duo StandBy")
             .toolbar {
                 Button {
                     showingNameTag = true

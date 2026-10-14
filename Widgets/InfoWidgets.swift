@@ -41,69 +41,18 @@ struct DailyProvider: TimelineProvider {
 struct CalendarWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WidgetKinds.calendar, provider: DailyProvider(pack: .free)) { entry in
-            CalendarFace(date: entry.date, settings: entry.settings)
-                .padding(12)
+            FaceWithDetails {
+                CalendarFace(date: entry.date, settings: entry.settings)
+            } details: {
+                MonthGrid(date: entry.date, accent: entry.settings.accent)
+            }
                 .containerBackground(for: .widget) {
                     StudioWidgetBackground(widget: .calendar, settings: entry.settings)
                 }
         }
         .configurationDisplayName("Calendar")
         .description(StudioWidget.calendar.summary)
-        .standByStyle()
-    }
-}
-
-// MARK: - Battery
-
-struct BatteryEntry: TimelineEntry {
-    let date: Date
-    let level: Float
-    let isCharging: Bool
-    let settings: StudioSettings
-}
-
-struct BatteryProvider: TimelineProvider {
-    func placeholder(in context: Context) -> BatteryEntry {
-        BatteryEntry(date: .now, level: 0.8, isCharging: true, settings: StudioSettings())
-    }
-
-    func getSnapshot(in context: Context, completion: @escaping (BatteryEntry) -> Void) {
-        Task { @MainActor in completion(Self.readBattery()) }
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<BatteryEntry>) -> Void) {
-        Task { @MainActor in
-            let entry = Self.readBattery()
-            completion(Timeline(entries: [entry], policy: .after(entry.date.addingTimeInterval(15 * 60))))
-        }
-    }
-
-    @MainActor
-    private static func readBattery() -> BatteryEntry {
-        let device = UIDevice.current
-        device.isBatteryMonitoringEnabled = true
-        let state = device.batteryState
-        return BatteryEntry(
-            date: .now,
-            level: device.batteryLevel,
-            isCharging: state == .charging || state == .full,
-            settings: .load()
-        )
-    }
-}
-
-struct BatteryWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: WidgetKinds.battery, provider: BatteryProvider()) { entry in
-            BatteryFace(level: entry.level, isCharging: entry.isCharging, settings: entry.settings)
-                .padding(12)
-                .containerBackground(for: .widget) {
-                    StudioWidgetBackground(widget: .battery, settings: entry.settings)
-                }
-        }
-        .configurationDisplayName("Battery")
-        .description(StudioWidget.battery.summary)
-        .standByStyle()
+        .standByStyle([.systemSmall, .systemMedium])
     }
 }
 
@@ -112,8 +61,11 @@ struct BatteryWidget: Widget {
 struct MoonWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WidgetKinds.moon, provider: DailyProvider(pack: .space)) { entry in
-            MoonFace(date: entry.date)
-                .padding(14)
+            FaceWithDetails(padding: 14) {
+                MoonFace(date: entry.date)
+            } details: {
+                MoonDetails(date: entry.date)
+            }
                 .locked(entry.isLocked, pack: .space)
                 .containerBackground(for: .widget) {
                     StudioWidgetBackground(widget: .moon, settings: entry.settings)
@@ -121,7 +73,7 @@ struct MoonWidget: Widget {
         }
         .configurationDisplayName("Moon Phase")
         .description(StudioWidget.moon.summary)
-        .standByStyle()
+        .standByStyle([.systemSmall, .systemMedium])
     }
 }
 
@@ -130,8 +82,11 @@ struct MoonWidget: Widget {
 struct CountdownWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WidgetKinds.countdown, provider: DailyProvider(pack: .pro)) { entry in
-            CountdownFace(now: entry.date, settings: entry.settings)
-                .padding(12)
+            FaceWithDetails {
+                CountdownFace(now: entry.date, settings: entry.settings)
+            } details: {
+                CountdownDetails(now: entry.date, settings: entry.settings)
+            }
                 .locked(entry.isLocked, pack: .pro)
                 .containerBackground(for: .widget) {
                     StudioWidgetBackground(widget: .countdown, settings: entry.settings)
@@ -139,7 +94,7 @@ struct CountdownWidget: Widget {
         }
         .configurationDisplayName("Countdown")
         .description(StudioWidget.countdown.summary)
-        .standByStyle()
+        .standByStyle([.systemSmall, .systemMedium])
     }
 }
 
@@ -206,7 +161,7 @@ struct QuoteWidget: Widget {
         }
         .configurationDisplayName("Quote")
         .description(StudioWidget.quote.summary)
-        .standByStyle()
+        .standByStyle([.systemSmall, .systemMedium])
     }
 }
 
@@ -248,6 +203,6 @@ struct PhotoWidget: Widget {
         }
         .configurationDisplayName("Photo Clock")
         .description(StudioWidget.photo.summary)
-        .standByStyle()
+        .standByStyle([.systemSmall, .systemMedium, .systemLarge])
     }
 }

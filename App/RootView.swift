@@ -21,6 +21,8 @@ enum ScreenshotMode {
 
 struct RootView: View {
     @State private var tab: AppTab = ScreenshotMode.startTab ?? .clocks
+    @State private var liveRequest: LiveScene?
+    @AppStorage("didShowWelcome") private var didShowWelcome = false
     @EnvironmentObject private var store: Store
     @Environment(\.scenePhase) private var scenePhase
 
@@ -35,7 +37,7 @@ struct RootView: View {
             NavigationStack { NameTagTab() }
                 .tabItem { Label("Name Tag", systemImage: "person.text.rectangle") }
                 .tag(AppTab.nameTag)
-            NavigationStack { LiveTab() }
+            NavigationStack { LiveTab(requestedScene: $liveRequest) }
                 .tabItem { Label("Live", systemImage: "play.tv") }
                 .tag(AppTab.live)
             NavigationStack { StoreView() }
@@ -43,7 +45,21 @@ struct RootView: View {
                 .tag(AppTab.store)
         }
         .onOpenURL { url in
-            if url.host == "store" { tab = .store }
+            switch url.host {
+            case "store":
+                tab = .store
+            case "live":
+                tab = .live
+                liveRequest = LiveScene(rawValue: url.lastPathComponent)
+            default:
+                break
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: { !didShowWelcome && ScreenshotMode.startTab == nil },
+            set: { if !$0 { didShowWelcome = true } }
+        )) {
+            WelcomeView { didShowWelcome = true }
         }
         .onChange(of: scenePhase) { _, phase in
             // Purchases made elsewhere (another device, Ask to Buy) show up when the app comes back.
@@ -65,11 +81,16 @@ struct NameTagTab: View {
 }
 
 struct LiveTab: View {
+    @Binding var requestedScene: LiveScene?
     @EnvironmentObject private var store: Store
     @State private var showingStore = false
 
     var body: some View {
-        LiveGalleryView(isUnlocked: { store.isUnlocked($0) }, onLocked: { _ in showingStore = true })
+        LiveGalleryView(
+            isUnlocked: { store.isUnlocked($0) },
+            onLocked: { _ in showingStore = true },
+            requestedScene: $requestedScene
+        )
             .sheet(isPresented: $showingStore) {
                 NavigationStack { StoreView() }
             }

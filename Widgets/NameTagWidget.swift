@@ -33,6 +33,6 @@ struct NameTagWidget: Widget {
         }
         .configurationDisplayName("Name Tag")
         .description(StudioWidget.nameTag.summary)
-        .standByStyle()
+        .standByStyle([.systemSmall, .systemMedium, .systemLarge])
     }
 }

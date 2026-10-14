@@ -35,7 +35,7 @@ struct ClockGalleryView: View {
             }
             .padding()
         }
-        .navigationTitle("StandBy Studio")
+        .navigationTitle("Duo StandBy")
         .toolbar { CustomizeButton() }
         .navigationDestination(for: ClockStyle.self) { style in
             StyleDetailView(style: style)
@@ -82,8 +82,8 @@ struct HowToCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     step(1, "Charge your iPhone, turn it sideways and let it rest.")
                     step(2, "Swipe to the widgets screen. Long-press a widget stack.")
-                    step(3, "Tap +, search \"StandBy Studio\" and add a widget.")
-                    step(4, "Long-press the clock, tap Edit Widget and pick a style.")
+                    step(3, "Tap +, search \"Duo StandBy\". Every clock style is its own widget.")
+                    step(4, "Same on the Home Screen and Lock Screen: long-press, Edit, Add Widget.")
                 }
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

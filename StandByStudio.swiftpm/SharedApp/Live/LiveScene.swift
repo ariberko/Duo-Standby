@@ -1,70 +1,5 @@
 import SwiftUI
 
-/// Full screen animated scenes. They live in the app (not widgets), because widgets can't animate.
-enum LiveScene: String, CaseIterable, Identifiable {
-    case dvd, matrix, starfield, mystify
-    case ledScroller, talkTimer, nowServing
-    case fireplace, candle, lavaLamp
-
-    var id: String { rawValue }
-
-    enum Group: String, CaseIterable, Identifiable {
-        case retro, signs, cozy
-
-        var id: String { rawValue }
-
-        var title: String {
-            switch self {
-            case .retro: "Retro Screensavers"
-            case .signs: "Smart Signs"
-            case .cozy: "Cozy"
-            }
-        }
-    }
-
-    var group: Group {
-        switch self {
-        case .dvd, .matrix, .starfield, .mystify: .retro
-        case .ledScroller, .talkTimer, .nowServing: .signs
-        case .fireplace, .candle, .lavaLamp: .cozy
-        }
-    }
-
-    var pack: Pack {
-        group == .signs ? .free : .live
-    }
-
-    var title: String {
-        switch self {
-        case .dvd: "DVD Bounce"
-        case .matrix: "Matrix Rain"
-        case .starfield: "Starfield"
-        case .mystify: "Mystify"
-        case .ledScroller: "LED Scroller"
-        case .talkTimer: "Talk Timer"
-        case .nowServing: "Now Serving"
-        case .fireplace: "Fireplace"
-        case .candle: "Candle"
-        case .lavaLamp: "Lava Lamp"
-        }
-    }
-
-    var summary: String {
-        switch self {
-        case .dvd: "Bounces around and changes color. Wait for the corner!"
-        case .matrix: "Green code falling down the screen."
-        case .starfield: "Fly through space at warp speed."
-        case .mystify: "Colorful twisting lines."
-        case .ledScroller: "Your text sliding by like a shop sign."
-        case .talkTimer: "Big countdown that turns red at the end."
-        case .nowServing: "Tap to call the next number."
-        case .fireplace: "A warm crackling fire."
-        case .candle: "One gently flickering candle."
-        case .lavaLamp: "Slow blobs rising and falling."
-        }
-    }
-}
-
 enum LiveKeys {
     static let dvdText = "live.dvdText"
     static let ledText = "live.ledText"
@@ -135,6 +70,8 @@ struct LiveSceneHost: View {
 struct LiveGalleryView: View {
     var isUnlocked: (Pack) -> Bool = { _ in true }
     var onLocked: (Pack) -> Void = { _ in }
+    /// Set from outside (for example a tap on the Live widget) to start a scene right away.
+    var requestedScene: Binding<LiveScene?> = .constant(nil)
 
     @State private var playing: LiveScene?
     @State private var thumbnailStart = Date.now.addingTimeInterval(-6)
@@ -147,7 +84,7 @@ struct LiveGalleryView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
-                Text("Full screen scenes for StandBy, tent mode or a desk. Tap one to play. The screen stays on.")
+                Text("Full screen scenes for StandBy, tent mode or a desk. Tap one to play. The screen stays on.\n\nTip: add the Live widget to StandBy or your Home Screen. Tapping it opens the scene full screen.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
@@ -185,6 +122,18 @@ struct LiveGalleryView: View {
         .navigationTitle("Live")
         .fullScreenCover(item: $playing) { scene in
             LiveSceneHost(scene: scene)
+        }
+        .onAppear { play(requestedScene.wrappedValue) }
+        .onChange(of: requestedScene.wrappedValue) { _, scene in play(scene) }
+    }
+
+    private func play(_ scene: LiveScene?) {
+        guard let scene else { return }
+        requestedScene.wrappedValue = nil
+        if isUnlocked(scene.pack) {
+            playing = scene
+        } else {
+            onLocked(scene.pack)
         }
     }
 

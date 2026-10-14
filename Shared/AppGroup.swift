@@ -16,10 +16,10 @@ enum AppGroup {
 enum WidgetKinds {
     static let clock = "ClockWidget"
     static let calendar = "CalendarWidget"
-    static let battery = "BatteryWidget"
     static let moon = "MoonWidget"
     static let countdown = "CountdownWidget"
     static let quote = "QuoteWidget"
     static let photo = "PhotoWidget"
     static let nameTag = "NameTagWidget"
+    static let live = "LiveWidget"
 }

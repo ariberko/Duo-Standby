@@ -5,21 +5,23 @@ import WidgetKit
 struct StandByWidgetsBundle: WidgetBundle {
     var body: some Widget {
         ClockWidget()
+        LiveWidget()
         NameTagWidget()
         CalendarWidget()
-        BatteryWidget()
         MoonWidget()
         CountdownWidget()
         QuoteWidget()
         PhotoWidget()
+        FreeAndRetroClocks().body
+        SpaceAndProClocks().body
     }
 }
 
 extension WidgetConfiguration {
-    /// Settings every StandBy Studio widget shares.
-    func standByStyle() -> some WidgetConfiguration {
+    /// Settings every Home Screen and StandBy widget shares. StandBy only shows the small size.
+    func standByStyle(_ families: [WidgetFamily] = [.systemSmall]) -> some WidgetConfiguration {
         self
-            .supportedFamilies([.systemSmall])
+            .supportedFamilies(families)
             .contentMarginsDisabled()
             .containerBackgroundRemovable(false)
     }
