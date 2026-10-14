@@ -130,12 +130,18 @@ struct FixedClockProvider<S: FixedClockStyle>: TimelineProvider {
 }
 
 struct FixedClockWidget<S: FixedClockStyle>: Widget {
+    private static var name: String { S.style.title + " Clock" }
+    private static var summary: String {
+        S.style.pack == .free ? "Free clock." : "Clock from the " + S.style.pack.title + "."
+    }
+
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "Clock-\(S.style.rawValue)", provider: FixedClockProvider<S>()) { entry in
             ClockWidgetView(entry: entry)
         }
-        .configurationDisplayName("\(S.style.title) Clock")
-        .description(S.style.pack == .free ? "Free clock." : "Clock from the \(S.style.pack.title).")
+        // Plain Strings on purpose: WidgetKit crashes on interpolated (formatted) text here.
+        .configurationDisplayName(Self.name)
+        .description(Self.summary)
         .standByStyle([.systemSmall, .systemMedium, .systemLarge])
     }
 }
