@@ -50,7 +50,7 @@ Every push runs `.github/workflows/build.yml` on GitHub's Macs. It builds the ap
 ## Build
 
 1. On a Mac with Xcode 16 or newer: `brew install xcodegen` then run `xcodegen` in this folder.
-2. Open `StandByStudio.xcodeproj`, set your Team for both targets.
+2. Open `StandByStudio.xcodeproj`. The Team (HKA3SA3729) is already set in `project.yml`.
 3. Both targets use the App Group `group.com.ariberko.standbystudio`. Register it in your Apple Developer account (or change it in `project.yml` and `Shared/AppGroup.swift`).
 4. Run the `StandByStudio` scheme. Purchases use `StandByStudio.storekit`, so no real money is charged.
 
