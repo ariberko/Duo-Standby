@@ -58,6 +58,11 @@ struct StoreView: View {
             }
         }
         .navigationTitle("Store")
+        .refreshable { await store.loadProducts() }
+        .task {
+            // Prices can fail to load (no network, products not live yet). Try again when the store opens.
+            if store.products.isEmpty { await store.loadProducts() }
+        }
         .alert("Purchase failed", isPresented: Binding(
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil } }
@@ -102,6 +107,7 @@ struct StoreView: View {
                 Text("Unavailable")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .help("Pull down to try again")
             }
         }
         .padding(.vertical, 4)
