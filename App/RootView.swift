@@ -21,6 +21,8 @@ enum ScreenshotMode {
 
 struct RootView: View {
     @State private var tab: AppTab = ScreenshotMode.startTab ?? .clocks
+    @EnvironmentObject private var store: Store
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         TabView(selection: $tab) {
@@ -42,6 +44,12 @@ struct RootView: View {
         }
         .onOpenURL { url in
             if url.host == "store" { tab = .store }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            // Purchases made elsewhere (another device, Ask to Buy) show up when the app comes back.
+            if phase == .active {
+                Task { await store.refreshEntitlements() }
+            }
         }
     }
 }

@@ -52,9 +52,16 @@ struct StoreView: View {
             }
 
             Section {
-                Button("Restore Purchases") {
+                Button {
                     Task { await store.restore() }
+                } label: {
+                    HStack {
+                        Text("Restore Purchases")
+                        Spacer()
+                        if store.isRestoring { ProgressView() }
+                    }
                 }
+                .disabled(store.isRestoring)
             }
         }
         .navigationTitle("Store")
@@ -62,6 +69,15 @@ struct StoreView: View {
         .task {
             // Prices can fail to load (no network, products not live yet). Try again when the store opens.
             if store.products.isEmpty { await store.loadProducts() }
+            await store.refreshEntitlements()
+        }
+        .alert("Store", isPresented: Binding(
+            get: { store.message != nil },
+            set: { if !$0 { store.message = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(store.message ?? "")
         }
         .alert("Purchase failed", isPresented: Binding(
             get: { errorMessage != nil },
