@@ -60,7 +60,7 @@ Every push runs `.github/workflows/build.yml` on GitHub's Macs. It builds the ap
 
 1. App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys → **+**. Name it `GitHub`, access **Admin**. Download the `.p8` file (only possible once).
 2. GitHub repo → Settings → Secrets and variables → Actions → New repository secret. Add `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_KEY_P8` (open the `.p8` file in Notepad and paste all of it).
-3. Run **Upload to TestFlight** from the Actions tab, or push a tag like `release-1`.
+3. Run **Upload to TestFlight** from the Actions tab, push a tag like `release-1`, or push a commit with `[testflight]` in its message.
 
 Don't upload the Swift Playgrounds preview. It is only for looking at designs.
 

@@ -5,16 +5,23 @@ name: Upload to TestFlight
 #   ASC_KEY_ID      Key ID
 #   ASC_ISSUER_ID   Issuer ID
 #   ASC_KEY_P8      the full text of the downloaded AuthKey_XXXX.p8 file
-# Run it from the Actions tab, or push a tag that starts with "release-".
+# Run it from the Actions tab (once this file is on the default branch), push a tag that
+# starts with "release-", or push a commit whose message contains "[testflight]".
 
 on:
   workflow_dispatch:
   push:
+    branches:
+      - "**"
     tags:
       - "release-*"
 
 jobs:
   upload:
+    if: >-
+      github.event_name != 'push'
+      || startsWith(github.ref, 'refs/tags/release-')
+      || contains(github.event.head_commit.message, '[testflight]')
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
