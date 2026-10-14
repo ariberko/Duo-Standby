@@ -19,9 +19,15 @@ jobs:
 
   xcode-app:
     name: App + widgets (Xcode)
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
+      - name: Use the newest Xcode
+        run: |
+          xcode=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)
+          echo "Using $xcode"
+          sudo xcode-select -s "$xcode/Contents/Developer"
+          xcodebuild -version
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate project
@@ -38,9 +44,15 @@ jobs:
 
   playground-app:
     name: iPad Playgrounds preview
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
+      - name: Use the newest Xcode
+        run: |
+          xcode=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)
+          echo "Using $xcode"
+          sudo xcode-select -s "$xcode/Contents/Developer"
+          xcodebuild -version
       - name: Build the .swiftpm app for iOS Simulator
         working-directory: StandByStudio.swiftpm
         run: |
