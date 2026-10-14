@@ -307,22 +307,28 @@ def compose(raw_dir, slide, out_path, size, ipad, rng):
         screen = screen.resize((int(dw), int(screen.height * dw / screen.width)), Image.LANCZOS)
         body = device(screen, ipad)
         region = h - top
-        cy = top + region * 0.30
+        cy = max(top + region * 0.30, top + body.height / 2 + 10 * s)
         # Glossy desk: a faded mirror image under the device.
         mirror = body.transpose(Image.FLIP_TOP_BOTTOM)
-        fade = np.linspace(0.32, 0, mirror.height)[:, None] * np.ones((1, mirror.width))
+        fade = np.linspace(0.16, 0, mirror.height)[:, None] * np.ones((1, mirror.width))
         mirror.putalpha(Image.fromarray((np.array(mirror.getchannel("A")) * fade).astype(np.uint8)))
         canvas.alpha_composite(mirror, (int(w / 2 - mirror.width / 2), int(cy + body.height / 2 + 24 * s)))
         place(canvas, body, (w / 2, cy), 0, accent, s)
         draw_chips(canvas, slide["chips"], cy + body.height * 1.2 + 40 * s, accent, s)
     elif kind == "pair":
         region = h - top
-        dw = w * (0.92 if not ipad else 0.66)
-        spots = [((w * 0.43, top + region * 0.27), blobs[0]), ((w * 0.57, top + region * 0.70), blobs[1])]
-        for path, (center, color) in zip(shots, spots):
+        dw = w * (0.92 if not ipad else 0.62)
+        bodies = []
+        for path in shots:
             screen = load_shot(path, True)
             screen = screen.resize((int(dw), int(screen.height * dw / screen.width)), Image.LANCZOS)
-            place(canvas, device(screen, ipad), center, 6, color, s)
+            bodies.append(device(screen, ipad))
+        # Height after the tilt, so the top device never covers the text.
+        rh = bodies[0].width * 0.105 + bodies[0].height * 0.995
+        y1 = max(top + region * 0.27, top + rh / 2)
+        y2 = max(top + region * 0.70, y1 + rh * 0.8)
+        for body, center, color in zip(bodies, [(w * 0.43, y1), (w * 0.57, y2)], blobs):
+            place(canvas, body, center, 6, color, s)
     elif kind == "tent":
         screen = load_shot(shots[0], True)
         draw_tent(canvas, screen, top, slide, s, ipad)
