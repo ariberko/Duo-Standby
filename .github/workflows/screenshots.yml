@@ -9,6 +9,9 @@ on:
     branches:
       - "**"
 
+permissions:
+  contents: write
+
 jobs:
   screenshots:
     if: github.event_name != 'push' || contains(github.event.head_commit.message, '[screenshots]')
@@ -61,3 +64,11 @@ jobs:
         with:
           name: screenshots
           path: screenshots
+      - name: Save screenshots to the "screenshots" branch
+        run: |
+          cd screenshots
+          git init -q
+          git checkout -q -b screenshots
+          git add .
+          git -c user.name="github-actions" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Screenshots from ${{ github.sha }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:screenshots
