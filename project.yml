@@ -29,6 +29,8 @@ targets:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: Duo StandBy
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true
@@ -64,6 +66,8 @@ targets:
       path: Widgets/Info.plist
       properties:
         CFBundleDisplayName: Duo StandBy
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
