@@ -47,17 +47,20 @@ struct LiveSceneHost: View {
 
     var body: some View {
         LiveSceneView(scene: scene, start: start)
+            .captureLandscape()
             .overlay(alignment: .topTrailing) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.headline)
-                        .foregroundStyle(.white.opacity(0.7))
-                        .padding(12)
-                        .background(Color.black.opacity(0.4), in: Circle())
+                if !Capture.landscape {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.headline)
+                            .foregroundStyle(.white.opacity(0.7))
+                            .padding(12)
+                            .background(Color.black.opacity(0.4), in: Circle())
+                    }
+                    .padding()
                 }
-                .padding()
             }
             .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
             .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }

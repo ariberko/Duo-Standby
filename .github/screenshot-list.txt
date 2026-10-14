@@ -1,12 +1,14 @@
-standby-flip|7|-screenshotUnlockAll -screenshotStandBy flip
-standby-synthwave|7|-screenshotUnlockAll -screenshotStandBy synthwave
+standby-flip|7|-screenshotUnlockAll -screenshotLandscape -screenshotStandBy flip
+standby-synthwave|7|-screenshotUnlockAll -screenshotLandscape -screenshotStandBy synthwave
 clocks|6|-screenshotUnlockAll -screenshotTab clocks
 widgets|6|-screenshotUnlockAll -screenshotTab widgets
 live|6|-screenshotUnlockAll -screenshotTab live
-dvd|9|-screenshotUnlockAll -screenshotScene dvd
-fireplace|8|-screenshotUnlockAll -screenshotScene fireplace
-lava|8|-screenshotUnlockAll -screenshotScene lavaLamp
-matrix|8|-screenshotUnlockAll -screenshotScene matrix
-nametag|7|-screenshotUnlockAll -screenshotNameTag "Do Not Disturb"
+dvd|9|-screenshotUnlockAll -screenshotLandscape -screenshotScene dvd
+fireplace|8|-screenshotUnlockAll -screenshotLandscape -screenshotScene fireplace
+lava|8|-screenshotUnlockAll -screenshotLandscape -screenshotScene lavaLamp
+matrix|8|-screenshotUnlockAll -screenshotLandscape -screenshotScene matrix
+mystify|8|-screenshotUnlockAll -screenshotLandscape -screenshotScene mystify
+led|8|-screenshotUnlockAll -screenshotLandscape -screenshotScene ledScroller
+nametag|7|-screenshotUnlockAll -screenshotLandscape -screenshotNameTag "Do Not Disturb"
 nametag-editor|6|-screenshotUnlockAll -screenshotTab nameTag
 store|6|-screenshotPrices -screenshotTab store

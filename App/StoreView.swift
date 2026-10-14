@@ -138,11 +138,11 @@ struct StoreView: View {
 
     /// Same prices as App Store Connect, only for simulator screenshots.
     private static let listPrices: [String: String] = [
-        "com.ariberkowitz.standbystudio.retropack": "$1.99",
-        "com.ariberkowitz.standbystudio.space": "$1.99",
-        "com.ariberkowitz.standbystudio.pro": "$2.99",
-        "com.ariberkowitz.standbystudio.live": "$2.99",
-        "com.ariberkowitz.standbystudio.all": "$5.99",
+        "com.ariberkowitz.standbystudio.retropack": "$0.99",
+        "com.ariberkowitz.standbystudio.space": "$0.99",
+        "com.ariberkowitz.standbystudio.pro": "$1.99",
+        "com.ariberkowitz.standbystudio.live": "$1.99",
+        "com.ariberkowitz.standbystudio.all": "$4.99",
     ]
 
     private func buy(_ product: Product) async {

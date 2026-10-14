@@ -82,11 +82,14 @@ struct StandByPreviewView: View {
                 .frame(width: geo.size.width, height: geo.size.height)
             }
         }
+        .captureLandscape()
         .overlay(alignment: .bottom) {
-            Text("Tap anywhere to close")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.4))
-                .padding(.bottom, 12)
+            if !Capture.landscape {
+                Text("Tap anywhere to close")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.4))
+                    .padding(.bottom, 12)
+            }
         }
         .contentShape(Rectangle())
         .onTapGesture { dismiss() }

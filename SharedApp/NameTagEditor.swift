@@ -204,12 +204,13 @@ struct TentSignView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var upsideDown = false
-    @State private var showsControls = true
+    @State private var showsControls = !Capture.landscape
 
     var body: some View {
         NameTagView(tag: tag, accent: accent, fontDesign: fontDesign)
             .rotationEffect(.degrees(upsideDown ? 180 : 0))
             .ignoresSafeArea()
+            .captureLandscape()
             .overlay(alignment: .bottom) {
                 if showsControls {
                     HStack(spacing: 12) {
