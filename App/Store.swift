@@ -6,7 +6,7 @@ import WidgetKit
 @MainActor
 final class Store: ObservableObject {
     @Published private(set) var products: [Product] = []
-    @Published private(set) var unlocked: Set<Pack> = Entitlements.unlocked()
+    @Published private(set) var unlocked: Set<Pack> = ScreenshotMode.unlocksEverything ? Set(Pack.allCases) : Entitlements.unlocked()
     @Published private(set) var isLoading = true
     @Published private(set) var isRestoring = false
     /// A short note for the user after a purchase or restore, shown as an alert.
@@ -112,6 +112,9 @@ final class Store: ObservableObject {
             }
         }
         owned.formUnion(PurchaseCache.productIDs)
+        if ScreenshotMode.unlocksEverything {
+            return (owned, unverified)
+        }
         var packs: Set<Pack> = [.free]
         for id in owned {
             packs.formUnion(StoreProducts.packs(for: id))

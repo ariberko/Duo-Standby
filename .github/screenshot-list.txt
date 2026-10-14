@@ -1,0 +1,12 @@
+standby-flip|7|-screenshotUnlockAll -screenshotStandBy flip
+standby-synthwave|7|-screenshotUnlockAll -screenshotStandBy synthwave
+clocks|6|-screenshotUnlockAll -screenshotTab clocks
+widgets|6|-screenshotUnlockAll -screenshotTab widgets
+live|6|-screenshotUnlockAll -screenshotTab live
+dvd|9|-screenshotUnlockAll -screenshotScene dvd
+fireplace|8|-screenshotUnlockAll -screenshotScene fireplace
+lava|8|-screenshotUnlockAll -screenshotScene lavaLamp
+matrix|8|-screenshotUnlockAll -screenshotScene matrix
+nametag|7|-screenshotUnlockAll -screenshotNameTag "Do Not Disturb"
+nametag-editor|6|-screenshotUnlockAll -screenshotTab nameTag
+store|6|-screenshotPrices -screenshotTab store

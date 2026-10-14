@@ -17,11 +17,38 @@ enum ScreenshotMode {
     static var showsListPrices: Bool {
         ProcessInfo.processInfo.arguments.contains("-screenshotPrices")
     }
+
+    /// Shows every pack unlocked, so screenshots have no lock badges.
+    static var unlocksEverything: Bool {
+        ProcessInfo.processInfo.arguments.contains("-screenshotUnlockAll")
+    }
+
+    static var scene: LiveScene? { value(for: "-screenshotScene").flatMap(LiveScene.init(rawValue:)) }
+    static var standByStyle: ClockStyle? { value(for: "-screenshotStandBy").flatMap(ClockStyle.init(rawValue:)) }
+    static var nameTagPreset: NameTag.Preset? {
+        value(for: "-screenshotNameTag").flatMap { name in NameTag.presets.first { $0.id == name } }
+    }
+
+    static var isActive: Bool {
+        ProcessInfo.processInfo.arguments.contains { $0.hasPrefix("-screenshot") }
+    }
+
+    private static func value(for flag: String) -> String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
+        return args[i + 1]
+    }
 }
 
 struct RootView: View {
-    @State private var tab: AppTab = ScreenshotMode.startTab ?? .clocks
-    @State private var liveRequest: LiveScene?
+    @State private var tab: AppTab = ScreenshotMode.startTab ?? (ScreenshotMode.scene != nil ? .live : .clocks)
+    @State private var liveRequest: LiveScene? = ScreenshotMode.scene
+    @State private var screenshotStandBy: ClockStyle? = ScreenshotMode.standByStyle
+    @State private var screenshotNameTag: NameTag? = ScreenshotMode.nameTagPreset.map { preset in
+        var tag = NameTag()
+        tag.apply(preset)
+        return tag
+    }
     @AppStorage("didShowWelcome") private var didShowWelcome = false
     @EnvironmentObject private var store: Store
     @Environment(\.scenePhase) private var scenePhase
@@ -56,10 +83,21 @@ struct RootView: View {
             }
         }
         .sheet(isPresented: Binding(
-            get: { !didShowWelcome && ScreenshotMode.startTab == nil },
+            get: { !didShowWelcome && !ScreenshotMode.isActive },
             set: { if !$0 { didShowWelcome = true } }
         )) {
             WelcomeView { didShowWelcome = true }
+        }
+        .fullScreenCover(item: $screenshotStandBy) { style in
+            StandByPreviewView(style: style)
+        }
+        .fullScreenCover(isPresented: Binding(
+            get: { screenshotNameTag != nil },
+            set: { if !$0 { screenshotNameTag = nil } }
+        )) {
+            if let tag = screenshotNameTag {
+                TentSignView(tag: tag, accent: Color(hex: "#FF9F0A"))
+            }
         }
         .onChange(of: scenePhase) { _, phase in
             // Purchases made elsewhere (another device, Ask to Buy) show up when the app comes back.
