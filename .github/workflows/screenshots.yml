@@ -1,0 +1,63 @@
+name: Screenshots
+
+# Runs the app on an iPhone simulator and saves a screenshot of each tab.
+# Starts by hand, or from a commit whose message contains "[screenshots]".
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  screenshots:
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[screenshots]')
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use the newest Xcode
+        run: |
+          xcode=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)
+          echo "Using $xcode"
+          sudo xcode-select -s "$xcode/Contents/Developer"
+      - name: Generate project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+      - name: Pick and boot a simulator
+        run: |
+          udid=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = [d for runtime, ds in json.load(sys.stdin)["devices"].items() if "iOS" in runtime for d in ds]
+          best = [d for d in devices if "Pro Max" in d["name"]] or [d for d in devices if "iPhone" in d["name"]]
+          print(best[-1]["udid"])')
+          echo "UDID=$udid" >> "$GITHUB_ENV"
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid"
+          xcrun simctl status_bar "$udid" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project StandByStudio.xcodeproj \
+            -scheme StandByStudio \
+            -destination "id=$UDID" \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -n 30
+      - name: Take screenshots
+        run: |
+          app=$(ls -d build/Build/Products/Debug-iphonesimulator/StandByStudio.app)
+          xcrun simctl install "$UDID" "$app"
+          mkdir -p screenshots
+          for tab in clocks widgets nameTag live store; do
+            xcrun simctl terminate "$UDID" com.ariberkowitz.standbystudio 2>/dev/null || true
+            xcrun simctl launch "$UDID" com.ariberkowitz.standbystudio -screenshotTab "$tab" -screenshotPrices
+            sleep 6
+            xcrun simctl io "$UDID" screenshot "screenshots/$tab.png"
+          done
+          ls -la screenshots
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots

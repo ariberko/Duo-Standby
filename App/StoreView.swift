@@ -101,6 +101,13 @@ struct StoreView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(purchasing != nil)
+            } else if ScreenshotMode.showsListPrices, let price = Self.listPrices[id] {
+                Text(price)
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.accentColor, in: Capsule())
+                    .foregroundStyle(.black)
             } else if store.isLoading {
                 ProgressView()
             } else {
@@ -112,6 +119,15 @@ struct StoreView: View {
         }
         .padding(.vertical, 4)
     }
+
+    /// Same prices as App Store Connect, only for simulator screenshots.
+    private static let listPrices: [String: String] = [
+        "com.ariberkowitz.standbystudio.retropack": "$1.99",
+        "com.ariberkowitz.standbystudio.space": "$1.99",
+        "com.ariberkowitz.standbystudio.pro": "$2.99",
+        "com.ariberkowitz.standbystudio.live": "$2.99",
+        "com.ariberkowitz.standbystudio.all": "$5.99",
+    ]
 
     private func buy(_ product: Product) async {
         purchasing = product.id

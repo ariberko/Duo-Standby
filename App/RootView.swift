@@ -1,12 +1,26 @@
 import SwiftUI
 import WidgetKit
 
-enum AppTab: Hashable {
+enum AppTab: String, Hashable {
     case clocks, widgets, nameTag, live, store
 }
 
+/// Launch arguments used by the screenshot workflow on the simulator.
+enum ScreenshotMode {
+    static var startTab: AppTab? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-screenshotTab"), i + 1 < args.count else { return nil }
+        return AppTab(rawValue: args[i + 1])
+    }
+
+    /// Shows list prices in the store when the simulator can't reach the App Store.
+    static var showsListPrices: Bool {
+        ProcessInfo.processInfo.arguments.contains("-screenshotPrices")
+    }
+}
+
 struct RootView: View {
-    @State private var tab: AppTab = .clocks
+    @State private var tab: AppTab = ScreenshotMode.startTab ?? .clocks
 
     var body: some View {
         TabView(selection: $tab) {
