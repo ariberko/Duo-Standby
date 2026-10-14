@@ -37,7 +37,12 @@ enum Pack: String, CaseIterable, Codable, Identifiable {
     }
 
     var productID: String? {
-        self == .free ? nil : "com.ariberkowitz.standbystudio.\(rawValue)"
+        switch self {
+        case .free: nil
+        // The first ".retro" ID was deleted in App Store Connect, and deleted IDs can never be reused.
+        case .retro: "com.ariberkowitz.standbystudio.retropack"
+        default: "com.ariberkowitz.standbystudio.\(rawValue)"
+        }
     }
 }
 

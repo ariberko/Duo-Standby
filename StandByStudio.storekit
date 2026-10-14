@@ -7,7 +7,7 @@
       "familyShareable" : true,
       "internalID" : "6740000001",
       "localizations" : [ { "description" : "Neon, LCD, Terminal and Synthwave clocks.", "displayName" : "Retro Pack", "locale" : "en_US" } ],
-      "productID" : "com.ariberkowitz.standbystudio.retro",
+      "productID" : "com.ariberkowitz.standbystudio.retropack",
       "referenceName" : "Retro Pack",
       "type" : "NonConsumable"
     },
