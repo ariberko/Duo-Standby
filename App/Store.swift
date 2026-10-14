@@ -18,6 +18,7 @@ final class Store: ObservableObject {
         updates = Task { [weak self] in
             for await result in StoreKit.Transaction.updates {
                 if case .verified(let transaction) = result {
+                    PurchaseCache.record(transaction)
                     await transaction.finish()
                     await self?.refreshEntitlements()
                 }
@@ -51,6 +52,9 @@ final class Store: ObservableObject {
         let result = try await product.purchase()
         switch result {
         case .success(.verified(let transaction)):
+            // Trust the transaction Apple just handed us, even if the device's
+            // entitlement list hasn't caught up yet (common in TestFlight).
+            PurchaseCache.record(transaction)
             await transaction.finish()
             await refreshEntitlements()
             message = "\(product.displayName) is unlocked. Enjoy!"
@@ -82,7 +86,7 @@ final class Store: ObservableObject {
         } else if let issue = report.unverified.first {
             message = "Apple found a purchase but couldn't verify it: \(issue)"
         } else if let syncError {
-            message = "Couldn't reach the App Store: \(syncError.localizedDescription)"
+            message = "The App Store didn't answer (\(syncError.localizedDescription)). If you bought a pack, tap its price again: Apple won't charge twice and it unlocks right away."
         } else {
             message = "No purchases found for this Apple Account."
         }
@@ -95,21 +99,19 @@ final class Store: ObservableObject {
         var unverified: [String] = []
         for await result in StoreKit.Transaction.currentEntitlements {
             switch result {
-            case .verified(let transaction) where transaction.revocationDate == nil:
-                owned.insert(transaction.productID)
+            case .verified(let transaction):
+                PurchaseCache.record(transaction)
             case .unverified(let transaction, let error):
                 unverified.append("\(transaction.productID): \(error.localizedDescription)")
-            default:
-                break
             }
         }
         // Belt and braces: ask for the latest transaction of each product too.
         for id in StoreProducts.all where !owned.contains(id) {
-            if case .verified(let transaction)? = await StoreKit.Transaction.latest(for: id),
-               transaction.revocationDate == nil {
-                owned.insert(id)
+            if case .verified(let transaction)? = await StoreKit.Transaction.latest(for: id) {
+                PurchaseCache.record(transaction)
             }
         }
+        owned.formUnion(PurchaseCache.productIDs)
         var packs: Set<Pack> = [.free]
         for id in owned {
             packs.formUnion(StoreProducts.packs(for: id))
@@ -120,5 +122,25 @@ final class Store: ObservableObject {
             WidgetCenter.shared.reloadAllTimelines()
         }
         return (owned, unverified)
+    }
+}
+
+/// Product IDs from verified transactions this device has seen. A pack stays unlocked
+/// until Apple reports a refund, so a slow or empty entitlement list can't re-lock it.
+enum PurchaseCache {
+    private static let key = "ownedProductIDs"
+
+    static var productIDs: Set<String> {
+        Set(AppGroup.defaults.stringArray(forKey: key) ?? [])
+    }
+
+    static func record(_ transaction: StoreKit.Transaction) {
+        var ids = productIDs
+        if transaction.revocationDate == nil {
+            ids.insert(transaction.productID)
+        } else {
+            ids.remove(transaction.productID)
+        }
+        AppGroup.defaults.set(ids.sorted(), forKey: key)
     }
 }
